@@ -1,0 +1,20 @@
+user:
+  kafka:
+    server: localhost:9092
+    topic: user
+    partition: 3
+    replicas: 3
+    store: user-state-store
+
+spring:
+  cloud:
+    stream:
+      kafka:
+        streams:
+          binder:
+            application-id: apollo-user
+      function:
+        definition: userProcessor;
+        bindings:
+          userProcessor-in-0.destination: user
+          userProcessor-out-0.destination: user-states
