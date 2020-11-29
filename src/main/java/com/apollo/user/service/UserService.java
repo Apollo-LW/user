@@ -1,7 +1,6 @@
 package com.apollo.user.service;
 
 import com.apollo.user.model.User;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 public interface UserService {
@@ -10,6 +9,4 @@ public interface UserService {
     Mono<String> getUserName(String userId);
     Mono<User> updateUser(User user);
     Mono<Boolean> deleteUser(String userId);
-    Flux<User> getAllUsers();
-
 }

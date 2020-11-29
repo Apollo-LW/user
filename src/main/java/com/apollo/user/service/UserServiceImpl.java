@@ -8,7 +8,6 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
@@ -24,7 +23,8 @@ public class UserServiceImpl implements UserService {
     private ReadOnlyKeyValueStore<String , User> userStateStore;
 
     private ReadOnlyKeyValueStore<String , User> getUserStateStore() {
-        if(this.userStateStore == null) this.userStateStore = interactiveQueryService.getQueryableStore(this.userStateStoreName , QueryableStoreTypes.keyValueStore());
+        if (this.userStateStore == null)
+            this.userStateStore = interactiveQueryService.getQueryableStore(this.userStateStoreName , QueryableStoreTypes.keyValueStore());
         return this.userStateStore;
     }
 
@@ -52,9 +52,5 @@ public class UserServiceImpl implements UserService {
         User tmpUser = this.getUserStateStore().get(userId);
         if (tmpUser == null) return Mono.empty();
         return this.kafkaService.sendUserRecord(tmpUser , true).map(Optional::isPresent);
-    }
-
-    public Flux<User> getAllUsers() {
-        return Flux.just(getUserStateStore()).map(stringUserReadOnlyKeyValueStore -> stringUserReadOnlyKeyValueStore.all().next().value);
     }
 }
