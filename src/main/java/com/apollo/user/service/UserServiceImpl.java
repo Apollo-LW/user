@@ -8,7 +8,6 @@ import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cloud.stream.binder.kafka.streams.InteractiveQueryService;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
 import java.util.Optional;
@@ -24,7 +23,8 @@ public class UserServiceImpl implements UserService {
     private ReadOnlyKeyValueStore<String , User> userStateStore;
 
     private ReadOnlyKeyValueStore<String , User> getUserStateStore() {
-        if(this.userStateStore == null) this.userStateStore = interactiveQueryService.getQueryableStore(this.userStateStoreName , QueryableStoreTypes.keyValueStore());
+        if (this.userStateStore == null)
+            this.userStateStore = interactiveQueryService.getQueryableStore(this.userStateStoreName , QueryableStoreTypes.keyValueStore());
         return this.userStateStore;
     }
 
@@ -41,20 +41,25 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<User> updateUser(User user) {
-        User tmpUser = this.getUserStateStore().get(user.getUserId());
-        if (tmpUser == null) return Mono.empty();
-        return this.kafkaService.sendUserRecord(user).map(sentUser -> sentUser.orElse(tmpUser));
+    public Mono<User> updateUser(Mono<User> userMono) {
+        return userMono.flatMap(user -> {
+            Optional<User> isUpdatedUser = Optional.ofNullable(this.getUserStateStore().get(user.getUserId()));
+            if (isUpdatedUser.isEmpty()) return Mono.empty();
+            User updateUser = isUpdatedUser.get();
+            updateUser.setGivenName(user.getGivenName());
+            updateUser.setFamilyName(user.getFamilyName());
+            updateUser.setUserType(user.getUserType());
+            updateUser.setImageUrl(user.getImageUrl());
+            updateUser.setGender(user.getGender());
+            updateUser.setBirthDate(user.getBirthDate());
+            return this.kafkaService.sendUserRecord(Mono.just(updateUser)).map(Optional::get);
+        });
     }
 
     @Override
     public Mono<Boolean> deleteUser(String userId) {
-        User tmpUser = this.getUserStateStore().get(userId);
-        if (tmpUser == null) return Mono.empty();
-        return this.kafkaService.sendUserRecord(tmpUser , true).map(Optional::isPresent);
-    }
-
-    public Flux<User> getAllUsers() {
-        return Flux.just(getUserStateStore()).map(stringUserReadOnlyKeyValueStore -> stringUserReadOnlyKeyValueStore.all().next().value);
+        Optional<User> user = Optional.ofNullable(this.getUserStateStore().get(userId));
+        if (user.isEmpty()) return Mono.empty();
+        return this.kafkaService.sendUserRecord(Mono.just(user.get()) , true).map(Optional::isPresent);
     }
 }

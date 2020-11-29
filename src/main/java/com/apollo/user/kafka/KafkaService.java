@@ -38,25 +38,16 @@ public class KafkaService {
         this.userEventPublisher.connect();
     }
 
-    public Mono<Optional<User>> sendUserRecord(User user) {
-        return this.userKafkaSender
-                .send(Mono.just(SenderRecord.create(new ProducerRecord<String , User>(this.topicName , user.getUserId() , user) , 1)))
-                .next()
-                .doOnNext(log::info)
-                .map(integerSenderResult -> {
-                    log.info(integerSenderResult.recordMetadata());
-                    if(integerSenderResult.exception() == null) return Optional.of(user);
-                    return Optional.empty();
-                });
+    public Mono<Optional<User>> sendUserRecord(Mono<User> userMono) {
+        return this.sendUserRecord(userMono , false);
     }
 
-    public Mono<Optional<User>> sendUserRecord(User user , boolean flag) {
-        return this.userKafkaSender
-                .send(Mono.just(SenderRecord
-                        .create(new ProducerRecord<String , User>(this.topicName , user.getUserId() , flag ? null : user) , 1)))
+    public Mono<Optional<User>> sendUserRecord(Mono<User> userMono , boolean flag) {
+        return userMono.flatMap(user -> this.userKafkaSender
+                .send(Mono.just(SenderRecord.create(new ProducerRecord<String, User>(this.topicName , user.getUserId() , flag ? null : user) , 1)))
                 .next()
                 .doOnNext(log::info)
-                .map(integerSenderResult -> integerSenderResult.exception() == null ? Optional.of(user) : Optional.empty());
+                .map(integerSenderResult -> integerSenderResult.exception() == null ? Optional.of(user) : Optional.empty()));
     }
 
 }
