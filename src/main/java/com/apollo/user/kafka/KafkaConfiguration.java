@@ -5,11 +5,13 @@ import lombok.extern.apachecommons.CommonsLog;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.common.config.TopicConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.kafka.config.TopicBuilder;
 import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import reactor.kafka.receiver.KafkaReceiver;
@@ -39,23 +41,28 @@ public class KafkaConfiguration {
 
     @Bean
     public NewTopic createUserTopic() {
-        return new NewTopic(this.topicName , this.numberOfPartitions , this.numberOfReplicas);
+        return TopicBuilder
+                .name(this.topicName)
+                .partitions(this.numberOfPartitions)
+                .replicas(this.numberOfReplicas)
+                .config(TopicConfig.RETENTION_MS_CONFIG , "-1")
+                .build();
     }
 
     @Bean
     KafkaSender<String , User> userKafkaSender() {
-        final Properties userProducerProperties = new Properties();
-        userProducerProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG , this.bootstrapServer);
-        userProducerProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG , StringSerializer.class);
-        userProducerProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG , JsonSerializer.class);
-        userProducerProperties.put(ProducerConfig.ACKS_CONFIG , "all");
-        userProducerProperties.put(ProducerConfig.RETRIES_CONFIG , 10);
-        userProducerProperties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG, "5000");
-        userProducerProperties.put(ProducerConfig.BATCH_SIZE_CONFIG, "163850");
-        userProducerProperties.put(ProducerConfig.LINGER_MS_CONFIG, "100");
-        userProducerProperties.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION, "1");
+        final Properties userSenderProperties = new Properties();
+        userSenderProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG , this.bootstrapServer);
+        userSenderProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG , StringSerializer.class);
+        userSenderProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG , JsonSerializer.class);
+        userSenderProperties.put(ProducerConfig.ACKS_CONFIG , "all");
+        userSenderProperties.put(ProducerConfig.RETRIES_CONFIG , 10);
+        userSenderProperties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG , "5000");
+        userSenderProperties.put(ProducerConfig.BATCH_SIZE_CONFIG , "163850");
+        userSenderProperties.put(ProducerConfig.LINGER_MS_CONFIG , "100");
+        userSenderProperties.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION , "1");
 
-        return new DefaultKafkaSender<String , User>(ProducerFactory.INSTANCE , SenderOptions.create(userProducerProperties));
+        return new DefaultKafkaSender<String, User>(ProducerFactory.INSTANCE , SenderOptions.create(userSenderProperties));
     }
 
     @Bean
@@ -68,6 +75,7 @@ public class KafkaConfiguration {
         userReceiverProperties.put(ConsumerConfig.GROUP_ID_CONFIG , "user-group");
         userReceiverProperties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG , true);
         userReceiverProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG , "latest");
+
         ReceiverOptions<String , User> userReceiverOptions = ReceiverOptions.create(userReceiverProperties);
         return new DefaultKafkaReceiver<String , User>(ConsumerFactory.INSTANCE , userReceiverOptions.subscription(Collections.singleton(this.topicName)));
     }
