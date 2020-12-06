@@ -13,4 +13,6 @@ public interface UserService {
 
     Mono<Boolean> deleteUser(String userId);
 
+    Mono<User> createUser(Mono<User> userMono);
+
 }
