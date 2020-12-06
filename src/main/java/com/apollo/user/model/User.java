@@ -13,5 +13,6 @@ public class User {
     private Gender gender;
     private UserType userType = UserType.USER;
     private Date birthDate , issuedAt , expiresIn , authTime;
+    private boolean isActive = true;
 
 }

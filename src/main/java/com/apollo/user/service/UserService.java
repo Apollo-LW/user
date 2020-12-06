@@ -12,5 +12,4 @@ public interface UserService {
     Mono<User> updateUser(Mono<User> userMono);
 
     Mono<Boolean> deleteUser(String userId);
-
 }

@@ -30,14 +30,19 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<User> getUserById(String userId) {
-        return Mono.just(this.getUserStateStore().get(userId));
+        Optional<User> user = Optional.ofNullable(this.getUserStateStore().get(userId));
+        if (user.isEmpty()) return Mono.empty();
+        User gotUser = user.get();
+        if (!gotUser.isActive()) return Mono.empty();
+        return Mono.just(gotUser);
     }
 
     @Override
     public Mono<String> getUserName(String userId) {
-        User user = this.getUserStateStore().get(userId);
-        if(user == null) return Mono.empty();
-        return Mono.just(user.getGivenName() + " " + user.getFamilyName());
+        Optional<User> user = Optional.ofNullable(this.getUserStateStore().get(userId));
+        if (user.isEmpty()) return Mono.empty();
+        User nameUser = user.get();
+        return Mono.just(nameUser.getGivenName() + " " + nameUser.getFamilyName());
     }
 
     @Override
@@ -60,6 +65,8 @@ public class UserServiceImpl implements UserService {
     public Mono<Boolean> deleteUser(String userId) {
         Optional<User> user = Optional.ofNullable(this.getUserStateStore().get(userId));
         if (user.isEmpty()) return Mono.empty();
-        return this.kafkaService.sendUserRecord(Mono.just(user.get()) , true).map(Optional::isPresent);
+        User deletedUser = user.get();
+        deletedUser.setActive(false);
+        return this.kafkaService.sendUserRecord(Mono.just(deletedUser)).map(Optional::isPresent);
     }
 }

@@ -39,12 +39,8 @@ public class KafkaService {
     }
 
     public Mono<Optional<User>> sendUserRecord(Mono<User> userMono) {
-        return this.sendUserRecord(userMono , false);
-    }
-
-    public Mono<Optional<User>> sendUserRecord(Mono<User> userMono , boolean flag) {
         return userMono.flatMap(user -> this.userKafkaSender
-                .send(Mono.just(SenderRecord.create(new ProducerRecord<String, User>(this.topicName , user.getUserId() , flag ? null : user) , 1)))
+                .send(Mono.just(SenderRecord.create(new ProducerRecord<String, User>(this.topicName , user.getUserId() , user) , 1)))
                 .next()
                 .doOnNext(log::info)
                 .map(integerSenderResult -> integerSenderResult.exception() == null ? Optional.of(user) : Optional.empty()));
