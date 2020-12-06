@@ -69,9 +69,4 @@ public class UserServiceImpl implements UserService {
         deletedUser.setActive(false);
         return this.kafkaService.sendUserRecord(Mono.just(deletedUser)).map(Optional::isPresent);
     }
-
-    @Override
-    public Mono<User> createUser(Mono<User> userMono) {
-        return this.kafkaService.sendUserRecord(userMono).map(Optional::get);
-    }
 }
