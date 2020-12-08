@@ -1,0 +1,84 @@
+{
+  "properties": [
+    {
+      "name": "user.kafka.server",
+      "type": "java.lang.String",
+      "defaultValue": "localhost:9092",
+      "description": "Kafka bootstrap server url."
+    },
+    {
+      "name": "user.kafka.topic",
+      "type": "java.lang.String",
+      "defaultValue": "user",
+      "description": "User Topic inside the Kafka broker."
+    },
+    {
+      "name": "user.kafka.partition",
+      "type": "java.lang.Integer",
+      "defaultValue": 3,
+      "description": "Number fo Partition for the user topic in the Kafka Broker."
+    },
+    {
+      "name": "user.kafka.replicas",
+      "type": "java.lang.Short",
+      "defaultValue": 3,
+      "description": "Number of replicas for the user topic in the Kafka Broker."
+    },
+    {
+      "name": "user.kafka.store",
+      "type": "java.lang.String",
+      "defaultValue": "user-state-store",
+      "description": "User State Store name."
+    },
+    {
+      "name": "user.kafka.retention",
+      "type": "java.lang.String",
+      "description": "Retention Period for the user topic."
+    },
+    {
+      "name": "user.kafka.acks",
+      "type": "java.lang.String",
+      "description": "Number of Acknowledgments for the user topic records."
+    },
+    {
+      "name": "user.kafka.retries",
+      "type": "java.lang.Integer",
+      "description": "Number of Retries for user topic records."
+    },
+    {
+      "name": "user.kafka.requestimeout",
+      "type": "java.lang.String",
+      "description": "The timeout for requesting for the user topic producer."
+    },
+    {
+      "name": "user.kafka.batch",
+      "type": "java.lang.String",
+      "description": "Batch size for the user topic records."
+    },
+    {
+      "name": "user.kafka.linger",
+      "type": "java.lang.String",
+      "description": " Maximum time to buffer data in asynchronous mode for the user topic."
+    },
+    {
+      "name": "user.kafka.max-in-flight",
+      "type": "java.lang.String",
+      "description": "Number of max connections for the user topic."
+    },
+    {
+      "name": "user.kafka.client-id",
+      "type": "java.lang.String",
+      "description": "User receiver client Id."
+    },
+    {
+      "name": "user.kafka.group-id",
+      "type": "java.lang.String",
+      "description": "User receiver group Id."
+    },
+    {
+      "name": "user.kafka.offset",
+      "type": "java.lang.String",
+      "description": "User receiver offset config."
+    }
+  ]
+}
