@@ -37,8 +37,8 @@ public class UserController {
         return userService.getUserName(userId);
     }
 
-    @PutMapping(value = "/", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Mono<User> updateUser(@RequestBody Mono<User> user) {
+    @PutMapping(value = "/")
+    public Mono<Boolean> updateUser(@RequestBody Mono<User> user) {
         return userService.updateUser(user);
     }
 

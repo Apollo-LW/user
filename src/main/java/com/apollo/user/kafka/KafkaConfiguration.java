@@ -38,6 +38,26 @@ public class KafkaConfiguration {
     private Integer numberOfPartitions;
     @Value("${user.kafka.replicas}")
     private Short numberOfReplicas;
+    @Value("${user.kafka.retention}")
+    private String retentionPeriod;
+    @Value("${user.kafka.acks}")
+    private String numberOfAcks;
+    @Value("${user.kafka.retries}")
+    private Integer numberOfRetries;
+    @Value("${user.kafka.requestimeout}")
+    private String requestTimeout;
+    @Value("${user.kafka.batch}")
+    private String batchSize;
+    @Value("${user.kafka.linger}")
+    private String linger;
+    @Value("${user.kafka.max-in-flight}")
+    private String maxInFlight;
+    @Value("${user.kafka.client-id}")
+    private String clientId;
+    @Value("${user.kafka.group-id}")
+    private String groupId;
+    @Value("${user.kafka.offset}")
+    private String offset;
 
     @Bean
     public NewTopic createUserTopic() {
@@ -45,7 +65,7 @@ public class KafkaConfiguration {
                 .name(this.topicName)
                 .partitions(this.numberOfPartitions)
                 .replicas(this.numberOfReplicas)
-                .config(TopicConfig.RETENTION_MS_CONFIG , "-1")
+                .config(TopicConfig.RETENTION_MS_CONFIG , this.retentionPeriod)
                 .build();
     }
 
@@ -55,12 +75,12 @@ public class KafkaConfiguration {
         userSenderProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG , this.bootstrapServer);
         userSenderProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG , StringSerializer.class);
         userSenderProperties.put(ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG , JsonSerializer.class);
-        userSenderProperties.put(ProducerConfig.ACKS_CONFIG , "all");
-        userSenderProperties.put(ProducerConfig.RETRIES_CONFIG , 10);
-        userSenderProperties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG , "5000");
-        userSenderProperties.put(ProducerConfig.BATCH_SIZE_CONFIG , "163850");
-        userSenderProperties.put(ProducerConfig.LINGER_MS_CONFIG , "100");
-        userSenderProperties.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION , "1");
+        userSenderProperties.put(ProducerConfig.ACKS_CONFIG , this.numberOfAcks);
+        userSenderProperties.put(ProducerConfig.RETRIES_CONFIG , this.numberOfRetries);
+        userSenderProperties.put(ProducerConfig.REQUEST_TIMEOUT_MS_CONFIG , this.requestTimeout);
+        userSenderProperties.put(ProducerConfig.BATCH_SIZE_CONFIG , this.batchSize);
+        userSenderProperties.put(ProducerConfig.LINGER_MS_CONFIG , this.linger);
+        userSenderProperties.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION , this.maxInFlight);
 
         return new DefaultKafkaSender<String, User>(ProducerFactory.INSTANCE , SenderOptions.create(userSenderProperties));
     }
@@ -71,12 +91,12 @@ public class KafkaConfiguration {
         userReceiverProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG , this.bootstrapServer);
         userReceiverProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG , StringDeserializer.class);
         userReceiverProperties.put(ConsumerConfig.VALUE_DESERIALIZER_CLASS_CONFIG , JsonDeserializer.class);
-        userReceiverProperties.put(ConsumerConfig.CLIENT_ID_CONFIG , "user-client");
-        userReceiverProperties.put(ConsumerConfig.GROUP_ID_CONFIG , "user-group");
+        userReceiverProperties.put(ConsumerConfig.CLIENT_ID_CONFIG , this.clientId);
+        userReceiverProperties.put(ConsumerConfig.GROUP_ID_CONFIG , this.groupId);
         userReceiverProperties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG , true);
-        userReceiverProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG , "latest");
+        userReceiverProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG , this.offset);
 
-        ReceiverOptions<String , User> userReceiverOptions = ReceiverOptions.create(userReceiverProperties);
-        return new DefaultKafkaReceiver<String , User>(ConsumerFactory.INSTANCE , userReceiverOptions.subscription(Collections.singleton(this.topicName)));
+        ReceiverOptions<String, User> userReceiverOptions = ReceiverOptions.create(userReceiverProperties);
+        return new DefaultKafkaReceiver<String, User>(ConsumerFactory.INSTANCE , userReceiverOptions.subscription(Collections.singleton(this.topicName)));
     }
 }

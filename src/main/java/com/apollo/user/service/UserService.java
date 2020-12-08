@@ -9,7 +9,7 @@ public interface UserService {
 
     Mono<String> getUserName(String userId);
 
-    Mono<User> updateUser(Mono<User> userMono);
+    Mono<Boolean> updateUser(Mono<User> userMono);
 
     Mono<Boolean> deleteUser(String userId);
 }
