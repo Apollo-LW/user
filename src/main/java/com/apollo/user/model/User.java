@@ -1,36 +1,20 @@
 package com.apollo.user.model;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
+@Data
 public class User {
 
-    @Getter
     private final String userId;
-    @Getter
-    private final Date issuedAt;
-    @Getter
-    private final Date expiresIn;
-    @Getter
-    private final Date authTime;
-    @Getter
-    @Setter
-    private String givenName, familyName, username, email, imageUrl;
-    @Getter
-    @Setter
-    private Gender gender;
-    @Getter
-    @Setter
-    private UserType userType;
-    @Getter
-    @Setter
+    private final Date issuedAt, expiresIn, authTime;
     private Date birthDate;
-    @Getter
-    @Setter
+    private String givenName, familyName, username, email, imageUrl;
+    private Gender gender;
+    private UserType userType;
     private boolean isActive;
 
     public User() {
