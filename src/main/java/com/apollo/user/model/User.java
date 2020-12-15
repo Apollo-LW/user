@@ -9,20 +9,12 @@ import java.util.UUID;
 @Data
 public class User {
 
-    private final String userId;
-    private final Date issuedAt, expiresIn, authTime;
+    private final String userId = UUID.randomUUID().toString();
+    private final Date issuedAt = Calendar.getInstance().getTime(), expiresIn = Calendar.getInstance().getTime(), authTime = Calendar.getInstance().getTime();
     private Date birthDate;
     private String givenName, familyName, username, email, imageUrl;
     private Gender gender;
-    private UserType userType;
-    private boolean isActive;
+    private UserType userType = UserType.USER;
+    private boolean isActive = true;
 
-    public User() {
-        this.userId = UUID.randomUUID().toString();
-        this.userType = UserType.USER;
-        this.isActive = true;
-        this.authTime = Calendar.getInstance().getTime(); //This is not final yet, meaning that it will change based on the gateway
-        this.issuedAt = Calendar.getInstance().getTime(); //This is not final yet, meaning that it will change based on the gateway
-        this.expiresIn = Calendar.getInstance().getTime(); //This is not final yet, meaning that it will change based on the gateway
-    }
 }
