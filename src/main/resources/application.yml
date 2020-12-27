@@ -28,3 +28,5 @@ spring:
       bindings:
         userProcessor-in-0.destination: user
         userProcessor-out-0.destination: user-states
+server:
+  port: 8088

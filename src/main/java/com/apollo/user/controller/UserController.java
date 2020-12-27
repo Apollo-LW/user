@@ -5,7 +5,6 @@ import com.apollo.user.model.User;
 import com.apollo.user.model.UserType;
 import com.apollo.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
@@ -27,12 +26,12 @@ public class UserController {
         return Flux.fromArray(UserType.values());
     }
 
-    @GetMapping(value = "/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/{userId}")
     public Mono<User> getUserById(@PathVariable("userId") String userId) {
         return userService.getUserById(userId);
     }
 
-    @GetMapping(value = "/name/{userId}", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
+    @GetMapping(value = "/name/{userId}")
     public Mono<String> getUserFullName(@PathVariable("userId") String userId) {
         return userService.getUserName(userId);
     }

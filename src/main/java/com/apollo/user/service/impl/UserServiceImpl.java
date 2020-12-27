@@ -1,7 +1,8 @@
-package com.apollo.user.service;
+package com.apollo.user.service.impl;
 
 import com.apollo.user.kafka.KafkaService;
 import com.apollo.user.model.User;
+import com.apollo.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.streams.state.QueryableStoreTypes;
 import org.apache.kafka.streams.state.ReadOnlyKeyValueStore;
