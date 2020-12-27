@@ -19,9 +19,9 @@ public class UserServiceImpl implements UserService {
 
     @Value("${user.kafka.store}")
     private String userStateStoreName;
-    private final InteractiveQueryService interactiveQueryService;
     private final KafkaService kafkaService;
     private ReadOnlyKeyValueStore<String, User> userStateStore;
+    private final InteractiveQueryService interactiveQueryService;
 
     private ReadOnlyKeyValueStore<String, User> getUserStateStore() {
         if (this.userStateStore == null)

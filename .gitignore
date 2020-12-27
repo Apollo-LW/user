@@ -3,8 +3,6 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-/src/main/java/com/apollo/user/controller/UserTestController.java
-/src/main/java/com/apollo/user/service/UserTestService.java
 
 ### STS ###
 .apt_generated
