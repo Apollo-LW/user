@@ -2,7 +2,6 @@ package com.apollo.user.model;
 
 import lombok.Data;
 
-import java.util.Calendar;
 import java.util.Date;
 import java.util.UUID;
 
@@ -10,7 +9,7 @@ import java.util.UUID;
 public class User {
 
     private final String userId = UUID.randomUUID().toString();
-    private final Date issuedAt = Calendar.getInstance().getTime(), expiresIn = Calendar.getInstance().getTime(), authTime = Calendar.getInstance().getTime();
+    private final Date issuedAt, expiresIn, authTime;
     private Date birthDate;
     private String givenName, familyName, username, email, imageUrl;
     private Gender gender;

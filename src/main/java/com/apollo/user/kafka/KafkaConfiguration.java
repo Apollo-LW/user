@@ -1,7 +1,6 @@
 package com.apollo.user.kafka;
 
 import com.apollo.user.model.User;
-import lombok.extern.apachecommons.CommonsLog;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -23,11 +22,9 @@ import reactor.kafka.sender.SenderOptions;
 import reactor.kafka.sender.internals.DefaultKafkaSender;
 import reactor.kafka.sender.internals.ProducerFactory;
 
-import java.util.Collections;
 import java.util.Properties;
 
 @Configuration
-@CommonsLog(topic = "Kafka Config")
 public class KafkaConfiguration {
 
     @Value("${user.kafka.server}")
@@ -70,7 +67,7 @@ public class KafkaConfiguration {
     }
 
     @Bean
-    KafkaSender<String , User> userKafkaSender() {
+    KafkaSender userKafkaSender() {
         final Properties userSenderProperties = new Properties();
         userSenderProperties.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG , this.bootstrapServer);
         userSenderProperties.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG , StringSerializer.class);
@@ -82,11 +79,11 @@ public class KafkaConfiguration {
         userSenderProperties.put(ProducerConfig.LINGER_MS_CONFIG , this.linger);
         userSenderProperties.put(ProducerConfig.MAX_IN_FLIGHT_REQUESTS_PER_CONNECTION , this.maxInFlight);
 
-        return new DefaultKafkaSender<String, User>(ProducerFactory.INSTANCE , SenderOptions.create(userSenderProperties));
+        return new DefaultKafkaSender(ProducerFactory.INSTANCE , SenderOptions.create(userSenderProperties));
     }
 
     @Bean
-    KafkaReceiver<String , User> userKafkaReceiver() {
+    KafkaReceiver userKafkaReceiver() {
         final Properties userReceiverProperties = new Properties();
         userReceiverProperties.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG , this.bootstrapServer);
         userReceiverProperties.put(ConsumerConfig.KEY_DESERIALIZER_CLASS_CONFIG , StringDeserializer.class);
@@ -96,7 +93,6 @@ public class KafkaConfiguration {
         userReceiverProperties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG , true);
         userReceiverProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG , this.offset);
 
-        ReceiverOptions<String, User> userReceiverOptions = ReceiverOptions.create(userReceiverProperties);
-        return new DefaultKafkaReceiver<String, User>(ConsumerFactory.INSTANCE , userReceiverOptions.subscription(Collections.singleton(this.topicName)));
+        return new DefaultKafkaReceiver<String, User>(ConsumerFactory.INSTANCE , ReceiverOptions.create(userReceiverProperties));
     }
 }
