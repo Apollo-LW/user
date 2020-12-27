@@ -1,6 +1,5 @@
 package com.apollo.user.kafka;
 
-import com.apollo.user.model.User;
 import org.apache.kafka.clients.admin.NewTopic;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.clients.producer.ProducerConfig;
@@ -93,6 +92,6 @@ public class KafkaConfiguration {
         userReceiverProperties.put(ConsumerConfig.ENABLE_AUTO_COMMIT_CONFIG , true);
         userReceiverProperties.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG , this.offset);
 
-        return new DefaultKafkaReceiver<String, User>(ConsumerFactory.INSTANCE , ReceiverOptions.create(userReceiverProperties));
+        return new DefaultKafkaReceiver(ConsumerFactory.INSTANCE , ReceiverOptions.create(userReceiverProperties));
     }
 }
