@@ -14,6 +14,6 @@ public class User {
     private String givenName, familyName, username, email, imageUrl;
     private Gender gender;
     private UserType userType = UserType.USER;
-    private boolean isActive = true;
+    private boolean isActive = true, isPublic;
 
 }

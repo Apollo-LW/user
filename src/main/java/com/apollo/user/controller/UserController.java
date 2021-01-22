@@ -31,11 +31,6 @@ public class UserController {
         return userService.getUserById(userId);
     }
 
-    @GetMapping(value = "/name/{userId}")
-    public Mono<String> getUserFullName(@PathVariable("userId") String userId) {
-        return userService.getUserName(userId);
-    }
-
     @PutMapping(value = "/")
     public Mono<Boolean> updateUser(@RequestBody Mono<User> user) {
         return userService.updateUser(user);

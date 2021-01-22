@@ -25,7 +25,7 @@ public class UserServiceImpl implements UserService {
 
     private ReadOnlyKeyValueStore<String, User> getUserStateStore() {
         if (this.userStateStore == null)
-            this.userStateStore = interactiveQueryService.getQueryableStore(this.userStateStoreName , QueryableStoreTypes.keyValueStore());
+            this.userStateStore = interactiveQueryService.getQueryableStore(this.userStateStoreName, QueryableStoreTypes.keyValueStore());
         return this.userStateStore;
     }
 

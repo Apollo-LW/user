@@ -17,8 +17,8 @@ public class KafkaUserProcessor {
     String userStateStoreName;
 
     @Bean
-    public Function<KStream<String , User>, KTable<String , User>> userProcessor() {
-        return userRecord -> userRecord.groupByKey().reduce((user , updatedUser) -> updatedUser , Materialized.as(this.userStateStoreName));
+    public Function<KStream<String, User>, KTable<String, User>> userProcessor() {
+        return userRecord -> userRecord.groupByKey().reduce((user, updatedUser) -> updatedUser, Materialized.as(this.userStateStoreName));
     }
 
 }
