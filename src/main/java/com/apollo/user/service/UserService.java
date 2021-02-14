@@ -7,8 +7,6 @@ public interface UserService {
 
     Mono<User> getUserById(String userId);
 
-    Mono<String> getUserName(String userId);
-
     Mono<Boolean> updateUser(Mono<User> userMono);
 
     Mono<Boolean> deleteUser(String userId);
