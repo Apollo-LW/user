@@ -24,9 +24,11 @@ spring:
       kafka:
         streams:
           binder:
-            application-id: apollo-user
+            functions:
+              userProcessor:
+                application-id: apollo-user
       bindings:
         userProcessor-in-0.destination: user
         userProcessor-out-0.destination: user-states
 server:
-  port: 8080
+  port: 8088
