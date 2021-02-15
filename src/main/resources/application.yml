@@ -28,7 +28,7 @@ spring:
               userProcessorState:
                 application-id: apollo-user
       bindings:
-        userProcessorState-in-0.destination: user
-        userProcessorState-out-0.destination: user-states
+        userProcessorState-in-0.destination: ${user.kafka.topic}
+        userProcessorState-out-0.destination: ${user.kafka.store}
 server:
   port: 8088
