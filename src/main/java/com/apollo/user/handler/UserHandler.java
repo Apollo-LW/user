@@ -1,5 +1,6 @@
 package com.apollo.user.handler;
 
+import com.apollo.user.constant.RoutingConstant;
 import com.apollo.user.model.Gender;
 import com.apollo.user.model.User;
 import com.apollo.user.model.UserType;
@@ -20,7 +21,7 @@ public class UserHandler {
     private final UserService userService;
 
     public @NotNull Mono<ServerResponse> getGenders(ServerRequest request) {
-        Flux<Gender> genderFlux = Flux.fromArray(Gender.values());
+        final Flux<Gender> genderFlux = Flux.fromArray(Gender.values());
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -28,7 +29,7 @@ public class UserHandler {
     }
 
     public @NotNull Mono<ServerResponse> getUserTypes(ServerRequest request) {
-        Flux<UserType> userTypeFlux = Flux.fromArray(UserType.values());
+        final Flux<UserType> userTypeFlux = Flux.fromArray(UserType.values());
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -36,8 +37,8 @@ public class UserHandler {
     }
 
     public @NotNull Mono<ServerResponse> getUserById(ServerRequest request) {
-        final String userId = request.pathVariable("userId");
-        Mono<User> userMono = this.userService.getUserById(userId);
+        final String userId = request.pathVariable(RoutingConstant.USER_ID);
+        final Mono<User> userMono = this.userService.getUserById(userId);
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
@@ -45,20 +46,20 @@ public class UserHandler {
     }
 
     public @NotNull Mono<ServerResponse> updateUser(ServerRequest request) {
-        Mono<User> userMono = request.bodyToMono(User.class);
-        Mono<Boolean> updateUserStatus = this.userService.updateUser(userMono);
+        final Mono<User> userMono = request.bodyToMono(User.class);
+        final Mono<Boolean> isUserUpdated = this.userService.updateUser(userMono);
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(updateUserStatus , Boolean.class);
+                .body(isUserUpdated , Boolean.class);
     }
 
     public @NotNull Mono<ServerResponse> deleteUser(ServerRequest request) {
-        String userId = request.pathVariable("userId");
-        Mono<Boolean> deleteUserStatus = this.userService.deleteUser(userId);
+        final String userId = request.pathVariable(RoutingConstant.USER_ID);
+        final Mono<Boolean> isUserDeleted = this.userService.deleteUser(userId);
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
-                .body(deleteUserStatus , Boolean.class);
+                .body(isUserDeleted , Boolean.class);
     }
 }
