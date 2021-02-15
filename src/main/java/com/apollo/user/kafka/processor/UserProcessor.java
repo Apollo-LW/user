@@ -1,4 +1,4 @@
-package com.apollo.user.kafka;
+package com.apollo.user.kafka.processor;
 
 import com.apollo.user.model.User;
 import org.apache.kafka.streams.kstream.KStream;
@@ -11,13 +11,13 @@ import org.springframework.stereotype.Service;
 import java.util.function.Function;
 
 @Service
-public class KafkaUserProcessor {
+public class UserProcessor {
 
     @Value("${user.kafka.store}")
     String userStateStoreName;
 
     @Bean
-    public Function<KStream<String, User>, KTable<String, User>> userProcessor() {
+    public Function<KStream<String, User>, KTable<String, User>> userProcessorState() {
         return userRecord -> userRecord
                 .groupByKey()
                 .reduce((user , updatedUser) -> updatedUser ,

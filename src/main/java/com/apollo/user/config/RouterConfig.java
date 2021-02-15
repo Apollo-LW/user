@@ -1,6 +1,6 @@
 package com.apollo.user.config;
 
-import com.apollo.user.constants.RoutingConstants;
+import com.apollo.user.constant.RoutingConstant;
 import com.apollo.user.handler.UserHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,14 +18,14 @@ public class RouterConfig {
     public RouterFunction<ServerResponse> route(UserHandler userHandler) {
         return RouterFunctions
                 .route()
-                .path(RoutingConstants.USER , routeFunctionBuilder ->
+                .path(RoutingConstant.USER_PATH , routeFunctionBuilder ->
                         routeFunctionBuilder.nest(accept(MediaType.APPLICATION_JSON) ,
                                 builder -> builder
-                                        .GET(RoutingConstants.GENDER , userHandler::getGenders)
-                                        .GET(RoutingConstants.TYPES , userHandler::getUserTypes)
-                                        .GET(RoutingConstants.USER_ID , userHandler::getUserById)
+                                        .GET(RoutingConstant.GENDER , userHandler::getGenders)
+                                        .GET(RoutingConstant.TYPES , userHandler::getUserTypes)
+                                        .GET(RoutingConstant.USER_ID_PATH , userHandler::getUserById)
                                         .PUT(userHandler::updateUser)
-                                        .DELETE(RoutingConstants.USER_ID , userHandler::deleteUser)))
+                                        .DELETE(RoutingConstant.USER_ID_PATH , userHandler::deleteUser)))
                 .build();
     }
 }

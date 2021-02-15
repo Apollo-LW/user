@@ -19,16 +19,16 @@ user:
 spring:
   cloud:
     function:
-      definition: userProcessor;
+      definition: userProcessorState;
     stream:
       kafka:
         streams:
           binder:
             functions:
-              userProcessor:
+              userProcessorState:
                 application-id: apollo-user
       bindings:
-        userProcessor-in-0.destination: user
-        userProcessor-out-0.destination: user-states
+        userProcessorState-in-0.destination: user
+        userProcessorState-out-0.destination: user-states
 server:
   port: 8088
