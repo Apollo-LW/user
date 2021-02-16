@@ -32,9 +32,9 @@ public class UserServiceImpl implements UserService {
     @Override
     public Mono<Optional<User>> getUserById(final String userId) {
         Optional<User> userOptional = Optional.ofNullable(this.getUserStateStore().get(userId));
-        if (userOptional.isEmpty()) return Mono.empty();
+        if (userOptional.isEmpty()) return Mono.just(Optional.empty());
         User user = userOptional.get();
-        if (!user.isActive()) return Mono.empty();
+        if (!user.isActive()) return Mono.just(Optional.empty());
         return Mono.just(Optional.of(user));
     }
 
