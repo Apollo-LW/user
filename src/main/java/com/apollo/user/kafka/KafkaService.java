@@ -19,7 +19,7 @@ public class KafkaService {
     private String topicName;
     private final KafkaSender<String, User> userKafkaSender;
 
-    public Mono<Optional<User>> sendUserRecord(Mono<User> userMono) {
+    public Mono<Optional<User>> sendUserRecord(final Mono<User> userMono) {
         return userMono.flatMap(user -> this.userKafkaSender
                 .send(Mono.just(SenderRecord.create(new ProducerRecord<String, User>(this.topicName , user.getUserId() , user) , user.getUserId())))
                 .next()

@@ -20,7 +20,7 @@ public class UserHandler {
 
     private final UserService userService;
 
-    public @NotNull Mono<ServerResponse> getGenders(ServerRequest request) {
+    public @NotNull Mono<ServerResponse> getGenders(final ServerRequest request) {
         final Flux<Gender> genderFlux = Flux.fromArray(Gender.values());
         return ServerResponse
                 .ok()
@@ -28,7 +28,7 @@ public class UserHandler {
                 .body(genderFlux , Gender.class);
     }
 
-    public @NotNull Mono<ServerResponse> getUserTypes(ServerRequest request) {
+    public @NotNull Mono<ServerResponse> getUserTypes(final ServerRequest request) {
         final Flux<UserType> userTypeFlux = Flux.fromArray(UserType.values());
         return ServerResponse
                 .ok()
@@ -36,7 +36,7 @@ public class UserHandler {
                 .body(userTypeFlux , UserType.class);
     }
 
-    public @NotNull Mono<ServerResponse> getUserById(ServerRequest request) {
+    public @NotNull Mono<ServerResponse> getUserById(final ServerRequest request) {
         final String userId = request.pathVariable(RoutingConstant.USER_ID);
         final Mono<User> userMono = this.userService.getUserById(userId);
         return ServerResponse
@@ -45,7 +45,7 @@ public class UserHandler {
                 .body(userMono , User.class);
     }
 
-    public @NotNull Mono<ServerResponse> updateUser(ServerRequest request) {
+    public @NotNull Mono<ServerResponse> updateUser(final ServerRequest request) {
         final Mono<User> userMono = request.bodyToMono(User.class);
         final Mono<Boolean> isUserUpdated = this.userService.updateUser(userMono);
         return ServerResponse
@@ -54,7 +54,7 @@ public class UserHandler {
                 .body(isUserUpdated , Boolean.class);
     }
 
-    public @NotNull Mono<ServerResponse> deleteUser(ServerRequest request) {
+    public @NotNull Mono<ServerResponse> deleteUser(final ServerRequest request) {
         final String userId = request.pathVariable(RoutingConstant.USER_ID);
         final Mono<Boolean> isUserDeleted = this.userService.deleteUser(userId);
         return ServerResponse

@@ -14,7 +14,7 @@ import java.util.function.Function;
 public class UserProcessor {
 
     @Value("${user.kafka.store}")
-    String userStateStoreName;
+    private String userStateStoreName;
 
     @Bean
     public Function<KStream<String, User>, KTable<String, User>> userProcessorState() {

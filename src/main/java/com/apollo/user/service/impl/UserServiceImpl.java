@@ -30,7 +30,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<User> getUserById(String userId) {
+    public Mono<User> getUserById(final String userId) {
         Optional<User> userOptional = Optional.ofNullable(this.getUserStateStore().get(userId));
         if (userOptional.isEmpty()) return Mono.empty();
         User user = userOptional.get();
@@ -39,7 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<Boolean> updateUser(Mono<User> userMono) {
+    public Mono<Boolean> updateUser(final Mono<User> userMono) {
         return userMono.flatMap(user -> {
             Optional<User> userOptional = Optional.ofNullable(this.getUserStateStore().get(user.getUserId()));
             if (userOptional.isEmpty()) return Mono.empty();
@@ -55,7 +55,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<Boolean> deleteUser(String userId) {
+    public Mono<Boolean> deleteUser(final String userId) {
         Optional<User> userOptional = Optional.ofNullable(this.getUserStateStore().get(userId));
         if (userOptional.isEmpty()) return Mono.empty();
         User user = userOptional.get();
