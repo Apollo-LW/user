@@ -38,7 +38,7 @@ public class UserHandler {
 
     public @NotNull Mono<ServerResponse> getUserById(final ServerRequest request) {
         final String userId = request.pathVariable(RoutingConstant.USER_ID);
-        final Mono<User> userMono = this.userService.getUserById(userId);
+        final Mono<User> userMono = this.userService.getUserById(userId).flatMap(Mono::justOrEmpty);
         return ServerResponse
                 .ok()
                 .contentType(MediaType.APPLICATION_JSON)
