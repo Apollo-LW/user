@@ -30,19 +30,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Mono<User> getUserById(String userId) {
+    public Mono<Optional<User>> getUserById(final String userId) {
         Optional<User> userOptional = Optional.ofNullable(this.getUserStateStore().get(userId));
         if (userOptional.isEmpty()) return Mono.empty();
         User user = userOptional.get();
         if (!user.isActive()) return Mono.empty();
-        return Mono.just(user);
+        return Mono.just(Optional.of(user));
     }
 
     @Override
-    public Mono<Boolean> updateUser(Mono<User> userMono) {
-        return userMono.flatMap(user -> {
-            Optional<User> userOptional = Optional.ofNullable(this.getUserStateStore().get(user.getUserId()));
-            if (userOptional.isEmpty()) return Mono.empty();
+    public Mono<Boolean> updateUser(final Mono<User> userMono) {
+        return userMono.flatMap(user -> this.getUserById(user.getUserId()).flatMap(userOptional -> {
+            if (userOptional.isEmpty()) return Mono.just(false);
             User updateUser = userOptional.get();
             updateUser.setGivenName(user.getGivenName());
             updateUser.setFamilyName(user.getFamilyName());
@@ -51,15 +50,16 @@ public class UserServiceImpl implements UserService {
             updateUser.setGender(user.getGender());
             updateUser.setBirthDate(user.getBirthDate());
             return this.kafkaService.sendUserRecord(Mono.just(updateUser)).map(Optional::isPresent);
-        });
+        }));
     }
 
     @Override
-    public Mono<Boolean> deleteUser(String userId) {
-        Optional<User> userOptional = Optional.ofNullable(this.getUserStateStore().get(userId));
-        if (userOptional.isEmpty()) return Mono.empty();
-        User user = userOptional.get();
-        user.setActive(false);
-        return this.kafkaService.sendUserRecord(Mono.just(user)).map(Optional::isPresent);
+    public Mono<Boolean> deleteUser(final String userId) {
+        return this.getUserById(userId).flatMap(userOptional -> {
+            if (userOptional.isEmpty()) return Mono.just(false);
+            User user = userOptional.get();
+            user.setActive(false);
+            return this.kafkaService.sendUserRecord(Mono.just(user)).map(Optional::isPresent);
+        });
     }
 }

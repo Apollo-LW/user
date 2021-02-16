@@ -15,7 +15,7 @@ import static org.springframework.web.reactive.function.server.RequestPredicates
 public class RouterConfig {
 
     @Bean
-    public RouterFunction<ServerResponse> route(UserHandler userHandler) {
+    public RouterFunction<ServerResponse> route(final UserHandler userHandler) {
         return RouterFunctions
                 .route()
                 .path(RoutingConstant.USER_PATH , routeFunctionBuilder ->
