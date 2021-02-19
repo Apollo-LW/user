@@ -14,21 +14,21 @@ user:
     max-in-flight: 1
     client-id: apollo-user
     group-id: apollo-user-group
-    offset: latest
+    offset: earliest
 
 spring:
   cloud:
     function:
-      definition: userProcessorState;
+      definition: userStateProcessor;
     stream:
       kafka:
         streams:
           binder:
             functions:
-              userProcessorState:
+              userStateProcessor:
                 application-id: apollo-user
       bindings:
-        userProcessorState-in-0.destination: ${user.kafka.topic}
-        userProcessorState-out-0.destination: ${user.kafka.store}
+        userStateProcessor-in-0.destination: ${user.kafka.topic}
+        userStateProcessor-out-0.destination: ${user.kafka.store}
 server:
   port: 8088

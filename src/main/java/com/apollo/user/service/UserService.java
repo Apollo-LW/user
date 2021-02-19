@@ -5,6 +5,9 @@ import reactor.core.publisher.Mono;
 
 import java.util.Optional;
 
+/**
+ * Main User Service interface to be able to abstract operations for the user
+ */
 public interface UserService {
 
     Mono<Optional<User>> getUserById(final String userId);
