@@ -10,12 +10,21 @@ import org.springframework.stereotype.Service;
 
 import java.util.function.Function;
 
+/**
+ * Main User Model processor
+ * To handle streaming from the user Kafka topic
+ */
 @Service
 public class UserProcessor {
 
     @Value("${user.kafka.store}")
     private String userStateStoreName;
 
+    /**
+     * User state processor, that reduce incoming events from the user topic into it's final state
+     *
+     * @return a {@link KTable} which is a key (the userId) and a value (the user) of the final state of the User
+     */
     @Bean
     public Function<KStream<String, User>, KTable<String, User>> userStateProcessor() {
         return userRecord -> userRecord
