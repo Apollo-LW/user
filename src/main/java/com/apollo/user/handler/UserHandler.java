@@ -39,19 +39,17 @@ public class UserHandler {
     public @NotNull Mono<ServerResponse> getUserById(final ServerRequest request) {
         final String userId = request.pathVariable(RoutingConstant.USER_ID);
         final Mono<User> userMono = this.userService.getUserById(userId).flatMap(Mono::justOrEmpty);
-        return ServerResponse
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(userMono , User.class);
+        return userMono
+                .flatMap(user -> ServerResponse.ok().body(user , User.class))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public @NotNull Mono<ServerResponse> updateUser(final ServerRequest request) {
         final Mono<User> userMono = request.bodyToMono(User.class);
         final Mono<Boolean> isUserUpdated = this.userService.updateUser(userMono);
-        return ServerResponse
-                .ok()
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(isUserUpdated , Boolean.class);
+        return userMono
+                .flatMap(user -> ServerResponse.accepted().body(user , User.class))
+                .switchIfEmpty(ServerResponse.badRequest().body("Something is not right with the request" , String.class));
     }
 
     public @NotNull Mono<ServerResponse> deleteUser(final ServerRequest request) {
