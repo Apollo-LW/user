@@ -24,6 +24,14 @@ import reactor.kafka.sender.internals.ProducerFactory;
 
 import java.util.Properties;
 
+/**
+ * Main User Kafka Configuration which
+ * <ul>
+ *     <li>Topic Creation</li>
+ *     <li>Reactive Producer Configuration</li>
+ *     <li>Reactive Receiver Configuration</li>
+ * </ul>
+ */
 @Configuration
 public class KafkaConfiguration {
 
@@ -56,6 +64,11 @@ public class KafkaConfiguration {
     @Value("${user.kafka.offset}")
     private String offset;
 
+    /**
+     * User topic creation
+     *
+     * @return a new Kafka Topic {@link NewTopic} if it was not created in the topic
+     */
     @Bean
     NewTopic createUserTopic() {
         return TopicBuilder
@@ -66,6 +79,11 @@ public class KafkaConfiguration {
                 .build();
     }
 
+    /**
+     * Reactive Producer Configuration
+     *
+     * @return a new Reactive Producer {@link KafkaSender}
+     */
     @Bean
     KafkaSender<String, User> userKafkaSender() {
         final Properties userSenderProperties = new Properties();
@@ -82,6 +100,11 @@ public class KafkaConfiguration {
         return new DefaultKafkaSender<String, User>(ProducerFactory.INSTANCE , SenderOptions.create(userSenderProperties));
     }
 
+    /**
+     * Reactive Consumer Configuration
+     *
+     * @return a new Reactive Consumer {@link KafkaReceiver}
+     */
     @Bean
     KafkaReceiver<String, User> userKafkaReceiver() {
         final Properties userReceiverProperties = new Properties();
