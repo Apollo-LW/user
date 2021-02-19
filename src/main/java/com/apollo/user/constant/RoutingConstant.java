@@ -1,5 +1,8 @@
 package com.apollo.user.constant;
 
+/**
+ * Main class for routing strings
+ */
 public abstract class RoutingConstant {
 
     public static final String USER_PATH = "/user";

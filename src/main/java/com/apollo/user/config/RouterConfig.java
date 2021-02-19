@@ -11,9 +11,21 @@ import org.springframework.web.reactive.function.server.ServerResponse;
 
 import static org.springframework.web.reactive.function.server.RequestPredicates.accept;
 
+/**
+ * Configuration for the router functions, to be able to route request to the correct handler
+ */
 @Configuration
 public class RouterConfig {
 
+    /**
+     * Main routing function for the User API
+     * Base URI will start with {@link RoutingConstant#USER_PATH}
+     * and accept JSON Data for all request
+     *
+     * @param userHandler the main handler for user operations
+     *
+     * @return a {@link RouterFunction} with the handler functions return type, which is a ServerResponse in this case
+     */
     @Bean
     public RouterFunction<ServerResponse> route(final UserHandler userHandler) {
         return RouterFunctions
