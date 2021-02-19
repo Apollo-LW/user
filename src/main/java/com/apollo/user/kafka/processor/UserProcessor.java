@@ -17,7 +17,7 @@ public class UserProcessor {
     private String userStateStoreName;
 
     @Bean
-    public Function<KStream<String, User>, KTable<String, User>> userProcessorState() {
+    public Function<KStream<String, User>, KTable<String, User>> userStateProcessor() {
         return userRecord -> userRecord
                 .groupByKey()
                 .reduce((user , updatedUser) -> updatedUser ,

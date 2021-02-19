@@ -9,13 +9,10 @@ import java.util.UUID;
 public class User {
 
     private final String userId = UUID.randomUUID().toString();
-    private Date issuedAt, expiresIn, authTime;
     private Date birthDate;
-    private String givenName, familyName, username, email, imageUrl;
     private Gender gender;
+    private boolean isActive = true;
+    private String givenName, familyName, username, email, imageUrl;
     private UserType userType = UserType.USER;
-    private boolean isActive = true, isPublic;
 
-    public User() {
-    }
 }

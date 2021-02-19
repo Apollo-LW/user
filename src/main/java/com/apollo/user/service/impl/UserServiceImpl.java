@@ -1,5 +1,6 @@
 package com.apollo.user.service.impl;
 
+import com.apollo.user.constant.ErrorConstant;
 import com.apollo.user.kafka.KafkaService;
 import com.apollo.user.model.User;
 import com.apollo.user.service.UserService;
@@ -31,6 +32,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<Optional<User>> getUserById(final String userId) {
+        if (userId == null || userId.length() == 0)
+            return Mono.error(new NullPointerException(ErrorConstant.USER_ID));
+
         Optional<User> userOptional = Optional.ofNullable(this.getUserStateStore().get(userId));
         if (userOptional.isEmpty()) return Mono.just(Optional.empty());
         User user = userOptional.get();
@@ -40,21 +44,28 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public Mono<Boolean> updateUser(final Mono<User> userMono) {
-        return userMono.flatMap(user -> this.getUserById(user.getUserId()).flatMap(userOptional -> {
-            if (userOptional.isEmpty()) return Mono.just(false);
-            User updateUser = userOptional.get();
-            updateUser.setGivenName(user.getGivenName());
-            updateUser.setFamilyName(user.getFamilyName());
-            updateUser.setUserType(user.getUserType());
-            updateUser.setImageUrl(user.getImageUrl());
-            updateUser.setGender(user.getGender());
-            updateUser.setBirthDate(user.getBirthDate());
-            return this.kafkaService.sendUserRecord(Mono.just(updateUser)).map(Optional::isPresent);
-        }));
+        return userMono.flatMap(user -> {
+            if (user == null)
+                return Mono.error(new NullPointerException(ErrorConstant.UPDATE_USER));
+            return this.getUserById(user.getUserId()).flatMap(userOptional -> {
+                if (userOptional.isEmpty()) return Mono.just(false);
+                User updateUser = userOptional.get();
+                updateUser.setGivenName(user.getGivenName());
+                updateUser.setFamilyName(user.getFamilyName());
+                updateUser.setUserType(user.getUserType());
+                updateUser.setImageUrl(user.getImageUrl());
+                updateUser.setGender(user.getGender());
+                updateUser.setBirthDate(user.getBirthDate());
+                return this.kafkaService.sendUserRecord(Mono.just(updateUser)).map(Optional::isPresent);
+            });
+        });
     }
 
     @Override
     public Mono<Boolean> deleteUser(final String userId) {
+        if (userId == null || userId.length() == 0)
+            return Mono.error(new NullPointerException(ErrorConstant.USER_ID));
+
         return this.getUserById(userId).flatMap(userOptional -> {
             if (userOptional.isEmpty()) return Mono.just(false);
             User user = userOptional.get();
