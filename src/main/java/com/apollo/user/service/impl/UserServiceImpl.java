@@ -1,7 +1,7 @@
 package com.apollo.user.service.impl;
 
 import com.apollo.user.constant.ErrorConstant;
-import com.apollo.user.kafka.KafkaService;
+import com.apollo.user.kafka.service.KafkaUserService;
 import com.apollo.user.model.User;
 import com.apollo.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,7 +28,7 @@ public class UserServiceImpl implements UserService {
 
     @Value("${user.kafka.store}")
     private String userStateStoreName;
-    private final KafkaService kafkaService;
+    private final KafkaUserService kafkaUserService;
     private ReadOnlyKeyValueStore<String, User> userStateStore;
     private final InteractiveQueryService interactiveQueryService;
 
@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
                 updateUser.setImageUrl(user.getImageUrl());
                 updateUser.setGender(user.getGender());
                 updateUser.setBirthDate(user.getBirthDate());
-                return this.kafkaService.sendUserRecord(Mono.just(updateUser)).map(Optional::isPresent);
+                return this.kafkaUserService.sendUserRecord(Mono.just(updateUser)).map(Optional::isPresent);
             });
         });
     }
@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
             if (userOptional.isEmpty()) return Mono.just(false);
             User user = userOptional.get();
             user.setActive(false);
-            return this.kafkaService.sendUserRecord(Mono.just(user)).map(Optional::isPresent);
+            return this.kafkaUserService.sendUserRecord(Mono.just(user)).map(Optional::isPresent);
         });
     }
 }

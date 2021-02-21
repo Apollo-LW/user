@@ -1,4 +1,4 @@
-package com.apollo.user.kafka;
+package com.apollo.user.kafka.service;
 
 import com.apollo.user.model.User;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ import java.util.Optional;
  */
 @Service
 @RequiredArgsConstructor
-public class KafkaService {
+public class KafkaUserService {
 
     @Value("${user.kafka.topic}")
     private String topicName;

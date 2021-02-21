@@ -1,10 +1,10 @@
 package com.apollo.user.model;
 
 import lombok.Data;
-import org.jetbrains.annotations.NotNull;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.UUID;
 

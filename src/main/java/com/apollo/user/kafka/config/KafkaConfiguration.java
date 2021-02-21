@@ -1,4 +1,4 @@
-package com.apollo.user.kafka;
+package com.apollo.user.kafka.config;
 
 import com.apollo.user.model.User;
 import org.apache.kafka.clients.admin.NewTopic;

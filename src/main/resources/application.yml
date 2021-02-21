@@ -14,7 +14,7 @@ user:
     max-in-flight: 1
     client-id: apollo-user
     group-id: apollo-user-group
-    offset: earliest
+    offset: latest
 
 spring:
   cloud:
