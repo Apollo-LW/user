@@ -36,6 +36,7 @@ public class RouterConfig {
                                         .GET(RoutingConstant.GENDER , userHandler::getGenders)
                                         .GET(RoutingConstant.TYPES , userHandler::getUserTypes)
                                         .GET(RoutingConstant.USER_ID_PATH , userHandler::getUserById)
+                                        .POST(userHandler::createUser)
                                         .PUT(userHandler::updateUser)
                                         .DELETE(RoutingConstant.USER_ID_PATH , userHandler::deleteUser)))
                 .build();
