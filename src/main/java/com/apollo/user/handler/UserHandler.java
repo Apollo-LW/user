@@ -76,6 +76,24 @@ public class UserHandler {
     }
 
     /**
+     * Create a new user from the user object that will be sent as a body with the request
+     *
+     * @param request the request with the user in the body
+     *
+     * @return the created {@link User}
+     * <p>
+     * and return a {@link ServerResponse#badRequest()} if the user was not created successfully
+     */
+    public @NotNull Mono<ServerResponse> createUser(final ServerRequest request) {
+        final Mono<User> userMono = request.bodyToMono(User.class);
+        final Mono<User> createdUserMono = this.userService.createUser(userMono).flatMap(Mono::justOrEmpty);
+        return createdUserMono
+                .flatMap(createdUser -> ServerResponse.ok().body(createdUser , User.class))
+                .switchIfEmpty(ServerResponse.badRequest().build())
+                .doOnError(throwable -> ServerResponse.badRequest().body(throwable.getMessage() , String.class));
+    }
+
+    /**
      * Update User
      * <p>
      * return a boolean flag that indicate if the user was updated successfully or not

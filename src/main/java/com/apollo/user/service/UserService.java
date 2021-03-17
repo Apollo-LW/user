@@ -15,4 +15,6 @@ public interface UserService {
     Mono<Boolean> updateUser(final Mono<User> userMono);
 
     Mono<Boolean> deleteUser(final String userId);
+
+    Mono<Optional<User>> createUser(Mono<User> userMono);
 }
