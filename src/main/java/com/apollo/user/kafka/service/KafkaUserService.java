@@ -1,5 +1,6 @@
 package com.apollo.user.kafka.service;
 
+import com.apollo.user.constant.ErrorConstant;
 import com.apollo.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.apache.kafka.clients.producer.ProducerRecord;
@@ -28,12 +29,19 @@ public class KafkaUserService {
      * @param userMono user event to produce
      *
      * @return an Optional of user based on if the event was produced successfully or not
+     *
+     * @throws NullPointerException if the user object was null
      */
     public Mono<Optional<User>> sendUserRecord(final Mono<User> userMono) {
-        return userMono.flatMap(user -> this.userKafkaSender
-                .send(Mono.just(SenderRecord.create(new ProducerRecord<String, User>(this.topicName , user.getUserId() , user) , user.getUserId())))
-                .next()
-                .map(senderResult -> senderResult.exception() == null ? Optional.of(user) : Optional.empty()));
+        return userMono.flatMap(user -> {
+            if (user == null)
+                return Mono.error(new NullPointerException(ErrorConstant.USER_NULL));
+
+            return this.userKafkaSender
+                    .send(Mono.just(SenderRecord.create(new ProducerRecord<String, User>(this.topicName , user.getUserId() , user) , user.getUserId())))
+                    .next()
+                    .map(senderResult -> senderResult.exception() == null ? Optional.of(user) : Optional.empty());
+        });
     }
 
 }

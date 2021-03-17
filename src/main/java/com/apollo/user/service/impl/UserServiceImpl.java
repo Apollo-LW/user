@@ -97,8 +97,10 @@ public class UserServiceImpl implements UserService {
      *
      * @param userId the userId of the the user to be deleted
      *
-     * @return a boolean flag if the user was deleted successfully or not, we throw a {@link NullPointerException} if the userId was Null,
-     * and an {@link IllegalArgumentException} if the userId was Empty
+     * @return a boolean flag if the user was deleted successfully or not
+     *
+     * @throws NullPointerException     if the userId was Null
+     * @throws IllegalArgumentException if the userId was Empty
      */
     @Override
     public Mono<Boolean> deleteUser(final String userId) {
@@ -113,5 +115,17 @@ public class UserServiceImpl implements UserService {
             user.setActive(false);
             return this.kafkaUserService.sendUserRecord(Mono.just(user)).map(Optional::isPresent);
         });
+    }
+
+    /**
+     * Create a user event
+     *
+     * @param userMono the user that will be created
+     *
+     * @return an {@link Optional} of a {@link User} so we don't deal with null values directly
+     */
+    @Override
+    public Mono<Optional<User>> createUser(Mono<User> userMono) {
+        return this.kafkaUserService.sendUserRecord(userMono);
     }
 }
